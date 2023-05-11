@@ -56,7 +56,11 @@ At this stage the project will move into beta where code functionality will be v
 
 ## Further Information 
 [Project WIKI](https://github.com/DeeEmm/DIY-Dyno/wiki)
+
 [Github repository](https://github.com/DeeEmm/DIY-Dyno)
+
 [Support forums](https://github.com/DeeEmm/DIY-Dyno/discussions)
+
 [Discord](https://discord.gg/9YpKxp5ctV)
+
 [Join our project community](https://www.facebook.com/groups/diydyno/)
