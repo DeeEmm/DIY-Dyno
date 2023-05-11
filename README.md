@@ -1,2 +1,2 @@
 # DIY-Dyno
-Dyno control and acquisition based on ESP32
+Dyno control and data acquisition based on ESP32 and load cell
