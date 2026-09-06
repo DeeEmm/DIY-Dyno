@@ -316,7 +316,7 @@ long Sensors::getMafRaw() {
 		}
 
 		case LINEAR_ANALOG: {
-			long mafFlowRaw = analogRead(pins.MAF);
+			long mafFlowRaw = 0; // bypassed
 			break;
 		}
 
@@ -358,8 +358,8 @@ double Sensors::getMafVolts() {
 		}
 
 		case LINEAR_ANALOG: {
-			long mafRaw = analogRead(pins.MAF);
-			sensorVolts = static_cast<double>(mafRaw) * (_hardware.get3v3SupplyVolts() / 4095.00F);
+			long mafRaw = 0; // bypassed
+			sensorVolts = 0.0;
 			break;
 		}
 
@@ -599,8 +599,8 @@ double Sensors::getPRefVolts() {
 		}
 
 		case LINEAR_ANALOG : {
-			long refPressRaw = analogRead(pins.PREF);
-			sensorVolts = static_cast<double>(refPressRaw) * (_hardware.get3v3SupplyVolts() / 4095.00F);
+			long refPressRaw = 0; // bypassed
+			sensorVolts = 0.0;
 			break;
 		}
 

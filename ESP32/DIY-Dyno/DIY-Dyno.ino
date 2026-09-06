@@ -223,27 +223,27 @@ int adcTaskCount = 0;
 
         // 2. Get Load Force from HX711 (Force)
         double force_kg = 0.0;
-        if (pins.MAF > -1 && pins.PREF > -1) {
-          long raw_load = getRawLoadcell(pins.MAF, pins.PREF);
+        if (pins.LC_DOUT > -1 && pins.LC_SCK > -1) {
+          long raw_load = getRawLoadcell(pins.LC_DOUT, pins.LC_SCK);
           double lc_scale = config.dMAF_MV_TRIM;
           if (lc_scale == 0.0) lc_scale = 10000.0; // avoid division by zero
           
           force_kg = (double)(raw_load - calVal.flow_offset) / lc_scale;
         }
-        sensorVal.PRefH2O = force_kg;
+        sensorVal.LoadForceKG = force_kg;
 
         // 3. Calculate Torque (Nm) = Force (kg) * 9.80665 * arm_length_meters
         double arm_length = config.dPREF_MV_TRIM;
         if (arm_length == 0.0) arm_length = 0.150; // default 150mm arm
         double torque_nm = force_kg * 9.80665 * arm_length;
         if (torque_nm < 0.0) torque_nm = 0.0;
-        sensorVal.PDiffH2O = torque_nm;
+        sensorVal.TorqueNM = torque_nm;
 
         // 4. Calculate HP = Torque (lb-ft) * RPM / 5252
         double torque_lb_ft = torque_nm * 0.737562149;
         double hp = (torque_lb_ft * rpm) / 5252.0;
         if (hp < 0.0) hp = 0.0;
-        sensorVal.FlowCFM = hp;
+        sensorVal.PowerHP = hp;
 
         // 5. SAE Atmospheric Corrections J1349
         double temp_c = sensorVal.TempDegC;
@@ -261,11 +261,10 @@ int adcTaskCount = 0;
         if (cf < 0.8) cf = 0.8;
         if (cf > 1.25) cf = 1.25;
         
-        sensorVal.FlowADJ = torque_nm * cf; // Corrected Torque
-        sensorVal.FlowSCFM = hp * cf;       // Corrected Horsepower
+        sensorVal.TorqueCorrectedNM = torque_nm * cf; // Corrected Torque
+        sensorVal.PowerHPCorrected = hp * cf;       // Corrected Horsepower
 
         // Backwards compatibility legacy assignments
-        sensorVal.FlowKGH = force_kg;
         sensorVal.FDiff = torque_nm;
 
       adcTaskCount += 1;
@@ -360,11 +359,11 @@ void setup(void) {
     attachInterrupt(digitalPinToInterrupt(pins.SPEED_SENS), speedPulseISR, RISING);
     _message.serialPrintf("Attach speed interrupt on pin %d\n", pins.SPEED_SENS);
   }
-  if (pins.MAF > -1 && pins.PREF > -1) {
-    pinMode(pins.MAF, INPUT_PULLUP);
-    pinMode(pins.PREF, OUTPUT);
-    digitalWrite(pins.PREF, LOW); // Reset HX711 normal state
-    _message.serialPrintf("Initialise HX711 pins: DOUT=%d, SCK=%d\n", pins.MAF, pins.PREF);
+  if (pins.LC_DOUT > -1 && pins.LC_SCK > -1) {
+    pinMode(pins.LC_DOUT, INPUT_PULLUP);
+    pinMode(pins.LC_SCK, OUTPUT);
+    digitalWrite(pins.LC_SCK, LOW); // Reset HX711 normal state
+    _message.serialPrintf("Initialise HX711 pins: DOUT=%d, SCK=%d\n", pins.LC_DOUT, pins.LC_SCK);
   }
 
   // Confirm default core - NOTE: setup() and loop() are automatically created on default core 

@@ -181,11 +181,11 @@ void Hardware::initialisePins () {
   if (!_prefs.isKey("VCC_5V")) _prefs.putInt("VCC_5V", pins.VCC_5V);
   if (!_prefs.isKey("VCC_3V3")) _prefs.putInt("VCC_3V3", pins.VCC_3V3);
   if (!_prefs.isKey("SPEED_SENS")) _prefs.putInt("SPEED_SENS", pins.SPEED_SENS);
-  if (!_prefs.isKey("ORIFICE_BCD_1")) _prefs.putInt("ORIFICE_BCD_1", pins.ORIFICE_BCD_1);
-  if (!_prefs.isKey("ORIFICE_BCD_2")) _prefs.putInt("ORIFICE_BCD_2", pins.ORIFICE_BCD_2);
-  if (!_prefs.isKey("ORIFICE_BCD_3")) _prefs.putInt("ORIFICE_BCD_3", pins.ORIFICE_BCD_3);
-  if (!_prefs.isKey("MAF")) _prefs.putInt("MAF", pins.MAF);
-  if (!_prefs.isKey("PREF")) _prefs.putInt("PREF", pins.PREF);
+  if (!_prefs.isKey("LF_BCD_1")) _prefs.putInt("LF_BCD_1", pins.LF_BCD_1);
+  if (!_prefs.isKey("LF_BCD_2")) _prefs.putInt("LF_BCD_2", pins.LF_BCD_2);
+  if (!_prefs.isKey("LF_BCD_3")) _prefs.putInt("LF_BCD_3", pins.LF_BCD_3);
+  if (!_prefs.isKey("LC_DOUT")) _prefs.putInt("LC_DOUT", pins.LC_DOUT);
+  if (!_prefs.isKey("LC_SCK")) _prefs.putInt("LC_SCK", pins.LC_SCK);
   if (!_prefs.isKey("PDIFF")) _prefs.putInt("PDIFF", pins.PDIFF);
   if (!_prefs.isKey("PITOT")) _prefs.putInt("PITOT", pins.PITOT);
   if (!_prefs.isKey("TEMPERATURE")) _prefs.putInt("TEMPERATURE", pins.TEMPERATURE);
@@ -253,11 +253,11 @@ void Hardware::loadPinsData () {
   pins.VCC_3V3 = _prefs.getInt("VCC_3V3");
   pins.VCC_5V = _prefs.getInt("VCC_5V");
   pins.SPEED_SENS = _prefs.getInt("SPEED_SENS");
-  pins.ORIFICE_BCD_1 = _prefs.getInt("ORIFICE_BCD_1");
-  pins.ORIFICE_BCD_2 = _prefs.getInt("ORIFICE_BCD_2");
-  pins.ORIFICE_BCD_3 = _prefs.getInt("ORIFICE_BCD_3");
-  pins.MAF = _prefs.getInt("MAF");
-  pins.PREF = _prefs.getInt("PREF");
+  pins.LF_BCD_1 = _prefs.getInt("LF_BCD_1");
+  pins.LF_BCD_2 = _prefs.getInt("LF_BCD_2");
+  pins.LF_BCD_3 = _prefs.getInt("LF_BCD_3");
+  pins.LC_DOUT = _prefs.getInt("LC_DOUT");
+  pins.LC_SCK = _prefs.getInt("LC_SCK");
   pins.PDIFF = _prefs.getInt("PDIFF");
   pins.PITOT = _prefs.getInt("PITOT");
   pins.TEMPERATURE = _prefs.getInt("TEMPERATURE");
@@ -348,34 +348,17 @@ int Hardware::setPinMode () {
     if (pins.SPEED_SENS > -1 ) {
       _message.verbosePrintf("Input SPEED_SENS: %d\n", pins.SPEED_SENS );
       currentPin = pins.SPEED_SENS;
-      pinMode(pins.SPEED_SENS, INPUT);   
+      pinMode(pins.SPEED_SENS, INPUT_PULLUP);   
     }
-    if (pins.ORIFICE_BCD_1 > -1 ) {
-      _message.verbosePrintf("Input ORIFICE_BCD_1: %d\n", pins.ORIFICE_BCD_1 );
-      currentPin = pins.ORIFICE_BCD_1;
-      pinMode(pins.ORIFICE_BCD_1, INPUT);   
+    if (pins.LC_DOUT > -1) {
+      _message.verbosePrintf("Input LC_DOUT: %d\n", pins.LC_DOUT);
+      currentPin = pins.LC_DOUT;
+      pinMode(pins.LC_DOUT, INPUT_PULLUP);
     }
-    if (pins.ORIFICE_BCD_2 > -1 ) {
-      _message.verbosePrintf("Input ORIFICE_BCD_2: %d\n", pins.ORIFICE_BCD_2 );
-      pinMode(pins.ORIFICE_BCD_2, INPUT);   
-      currentPin = pins.ORIFICE_BCD_2;
-      pinMode(pins.ORIFICE_BCD_2, INPUT);   
-    }
-    if (pins.ORIFICE_BCD_3 > -1 ) {
-      pinMode(pins.ORIFICE_BCD_3, INPUT);   
-      _message.verbosePrintf("Input ORIFICE_BCD_3: %d\n", pins.ORIFICE_BCD_3 );
-      currentPin = pins.ORIFICE_BCD_3;
-      pinMode(pins.ORIFICE_BCD_3, INPUT);   
-    }
-    if (config.iMAF_SRC_TYP == LINEAR_ANALOG && pins.MAF > -1) {
-      _message.verbosePrintf("Input MAF_BENCH: %d\n", pins.MAF );
-      currentPin = pins.MAF;
-      pinMode(pins.MAF, INPUT);   
-    }
-    if (config.iPREF_SENS_TYP == LINEAR_ANALOG && pins.PREF > -1){
-      _message.verbosePrintf("Input PREF: %d\n", pins.PREF );
-      currentPin = pins.PREF;
-      pinMode(pins.PREF, INPUT);   
+    if (pins.LC_SCK > -1) {
+      _message.verbosePrintf("Output LC_SCK: %d\n", pins.LC_SCK);
+      currentPin = pins.LC_SCK;
+      pinMode(pins.LC_SCK, OUTPUT);
     }
     if (config.iPDIFF_SENS_TYP == LINEAR_ANALOG && pins.PDIFF > -1) {
       _message.verbosePrintf("Input PDIFF: %d\n", pins.PDIFF );
@@ -709,31 +692,10 @@ double Hardware::get3v3SupplyVolts() {
 bool Hardware::benchIsRunning() {
     
   Messages _message;
-  Calculations _calculations;
-  Sensors _sensors;
-  
-  extern struct BenchSettings settings;
   extern struct Language language;
   extern struct SensorData sensorVal;
-  extern struct Configuration config;
 
-  double refPressureH2O;
-  double mafFlowRateCFM; 
-  bool pressureTest = true;
- 
-  refPressureH2O = _calculations.convertPressure(sensorVal.PRefKPA, INH2O);
-  mafFlowRateCFM = sensorVal.FlowCFM;
-
-  // convert negative value into positive
-  refPressureH2O = fabs(refPressureH2O); 
-
-  // Check if min flow and pRef are acheived...
-  if ((config.iPREF_SENS_TYP > 1) && (mafFlowRateCFM > settings.min_flow_rate) && (mafFlowRateCFM > settings.min_flow_rate) )  {
-    // ...pRef is enabled so we check both pRef and flow
-	  _message.Handler(language.LANG_BENCH_RUNNING); // REVIEW do we need to inform user that bench is running via GUI??? 
-	  return true;
-  } else if (( config.iPREF_SENS_TYP < 1) && (mafFlowRateCFM > settings.min_flow_rate)) {
-    // ...pRef is disabled so we only check flow
+  if (sensorVal.Swirl > 100.0) {
 	  _message.Handler(language.LANG_BENCH_RUNNING); 
 	  return true;
   } else {

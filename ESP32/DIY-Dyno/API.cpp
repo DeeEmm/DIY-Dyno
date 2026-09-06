@@ -295,7 +295,7 @@ void API::ParseMessage(char apiMessage) {
       case 'E': // Enum1 - Flow:Ref:Temp:Humidity:Baro
           if (status.doBootLoop) break;          
           snprintf(apiResponse, API_RESPONSE_LENGTH, "E%s%f%s%f%s%f%s%f%s%f", 
-          API_DELIMITER, sensorVal.FlowCFM, 
+          API_DELIMITER, sensorVal.PowerHP, 
           API_DELIMITER, _calculations.convertPressure(sensorVal.PRefKPA, KPA), 
           API_DELIMITER, _calculations.convertTemperature(sensorVal.TempDegC, DEGC), 
           API_DELIMITER, _calculations.convertRelativeHumidity(sensorVal.RelH, PERCENT), 
@@ -314,13 +314,12 @@ void API::ParseMessage(char apiMessage) {
       
       case 'F': // Get measured Flow in CFM 'F123.45\r\n'       
           if (status.doBootLoop) break;
-          snprintf(apiResponse, API_RESPONSE_LENGTH, "F%s%f", API_DELIMITER , sensorVal.FlowCFM);
+          snprintf(apiResponse, API_RESPONSE_LENGTH, "F%s%f", API_DELIMITER , sensorVal.PowerHP);
       break;
 
       case 'f': // Get measured Mass Flow 'F123.45\r\n'       
           if (status.doBootLoop) break;
-          // snprintf(apiResponse, API_RESPONSE_LENGTH, "f%s%f", API_DELIMITER , sensorVal.FlowKGH);
-          snprintf(apiResponse, API_RESPONSE_LENGTH, "f%s%f", API_DELIMITER , _sensors.getMafFlow());
+          snprintf(apiResponse, API_RESPONSE_LENGTH, "f%s%f", API_DELIMITER , sensorVal.LoadForceKG);
       break;
 
       case 'H': // Get measured Humidity 'H.123.45\r\n'

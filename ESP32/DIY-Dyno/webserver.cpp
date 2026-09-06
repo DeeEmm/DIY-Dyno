@@ -932,30 +932,8 @@ void Webserver::saveLiftDataForm(AsyncWebServerRequest *request){
         }
   }
 
-  // Get flow value based on capture Datatype
-  switch (settings.data_capture_datatype) {
-
-    case ACFM:
-      flowValue = sensorVal.FlowCFM;
-    break;
-    
-    case STD_ACFM:
-      flowValue = sensorVal.FlowSCFM;
-    break;
-    
-    case ADJ_ACFM:
-      flowValue = sensorVal.FlowADJ;
-    break;
-    
-    case ADJ_STD_ACFM:
-      flowValue = sensorVal.FlowADJSCFM;
-    break;
-    
-    case RAW_MASS:
-      flowValue = sensorVal.FlowKGH;
-    break;
-        
-  }
+  // Get performance value to log (HP)
+  flowValue = sensorVal.PowerHP;
 
   // Generate Timestamp or fallback Uptime for this capture
   extern struct DeviceStatus status;
@@ -983,8 +961,8 @@ void Webserver::saveLiftDataForm(AsyncWebServerRequest *request){
     valveData.datasets[idx].temp = sensorVal.TempDegC;
     valveData.datasets[idx].baro = sensorVal.BaroHPA;
     valveData.datasets[idx].relh = sensorVal.RelH;
-    valveData.datasets[idx].pref = sensorVal.PRefH2O;
-    valveData.datasets[idx].pdiff = sensorVal.PDiffH2O;
+    valveData.datasets[idx].pref = sensorVal.LoadForceKG;
+    valveData.datasets[idx].pdiff = sensorVal.TorqueNM;
     valveData.datasets[idx].flow = flowValue;
     valveData.datasets[idx].time = currentTimestamp;
 
@@ -2204,11 +2182,11 @@ String Webserver::processPinsPageTemplate(const String &var) {
   if (var == "SPEED_SENS") return String(pins.SPEED_SENS);
   if (var == "SWIRL_ENCODER_A") return String(pins.SWIRL_ENCODER_A);
   if (var == "SWIRL_ENCODER_B") return String(pins.SWIRL_ENCODER_B);
-  if (var == "ORIFICE_BCD_1") return String(pins.ORIFICE_BCD_1);
-  if (var == "ORIFICE_BCD_2") return String(pins.ORIFICE_BCD_2);
-  if (var == "ORIFICE_BCD_3") return String(pins.ORIFICE_BCD_3);
-  if (var == "MAF") return String(pins.MAF);
-  if (var == "PREF") return String(pins.PREF);
+  if (var == "ORIFICE_BCD_1") return String(pins.LF_BCD_1);
+  if (var == "ORIFICE_BCD_2") return String(pins.LF_BCD_2);
+  if (var == "ORIFICE_BCD_3") return String(pins.LF_BCD_3);
+  if (var == "LC_DOUT") return String(pins.LC_DOUT);
+  if (var == "LC_SCK") return String(pins.LC_SCK);
   if (var == "PDIFF") return String(pins.PDIFF);
   if (var == "PITOT") return String(pins.PITOT);
   if (var == "TEMPERATURE") return String(pins.TEMPERATURE);

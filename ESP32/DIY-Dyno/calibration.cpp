@@ -49,47 +49,13 @@ Calibration::Calibration () {
 ***/
 bool Calibration::setFlowOffset() {
 
-  extern struct BenchSettings settings;
   extern struct CalibrationData calVal;
-  extern struct Language language;
-  extern struct SensorData sensorVal;
+  extern long lastLoadcellRaw;
   
-  Sensors _sensors; 
-  Calculations _calculations;
-  Messages _message;
-
-  double flowVal = 0.0f;
-
-  // Get flow type based on currently visible tile
-  switch (sensorVal.flowtile) {
-    case MAFFLOW_TILE:
-      flowVal = sensorVal.FlowCFM;
-      // TODO ADD SYSTEM Warning !!!
-    break;
-
-    case ACFM_TILE:
-      flowVal = sensorVal.FlowCFM;
-    break;
-
-    case ADJCFM_TILE:
-      flowVal = sensorVal.FlowADJ;
-    break;
-
-    case SCFM_TILE:
-      flowVal = sensorVal.FlowSCFM;
-    break;
-
-  }
- 
-  // update config var
-  calVal.flow_offset = flowVal - calVal.cal_flow_rate;
+  calVal.flow_offset = (double)lastLoadcellRaw;
   
-  _message.debugPrintf("Calibration::setFlowOffset %d \n", calVal.flow_offset);
-
   saveCalibrationData();    
 
-  // _message.Handler(language.LANG_CAL_OFFSET_VAL + calVal.flow_offset);
-  
   return true;
   
 }
@@ -146,7 +112,7 @@ bool Calibration::setLeakOffset() {
     // _message.Handler(language.LANG_LEAK_CAL_VAL + calVal.leak_cal_offset);
   // }
 
-    calVal.leak_cal_offset = sensorVal.FlowCFM;
+    calVal.leak_cal_offset = sensorVal.PowerHP;
     // _message.Handler(language.LANG_LEAK_CAL_VAL + calVal.leak_cal_offset);
 
   saveCalibrationData();    
@@ -214,7 +180,7 @@ bool Calibration::setPdiffCalOffset() {
  
   if (calVal.pdiff_cal_offset == 0) {
     // update config var
-    calVal.pdiff_cal_offset = sensorVal.PDiffH2O;
+    calVal.pdiff_cal_offset = sensorVal.TorqueNM;
     _message.debugPrintf("Calibration::setPdiffOffset %d \n", calVal.pdiff_cal_offset);
   } else {
     // update config var

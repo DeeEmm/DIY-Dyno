@@ -38,6 +38,8 @@ Build numbers follow format YY MM DD VV Where VV is the incremental daily versio
 
 Build #     |  Description of Change
 --          | --
+2609070004  | Update var names 
+            | V1-APLHA
 2609070001  | Initial code creation from DIYFB Project
 23091502    | Added environment files
 23091501    | Added units tests folder

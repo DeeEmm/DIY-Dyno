@@ -70,9 +70,9 @@ def after_build(source, target, env):
 
     release_path = env.subst("$PROJECT_DIR/ESP32/DIY-Dyno/release/")
     project_path = env.subst("$PROJECT_DIR/ESP32/DIY-Dyno/")
-    bootloader_path = ".pio/build/esp32dev/bootloader.bin"
-    partitions_path = ".pio/build/esp32dev/partitions.bin"
-    firmware_path = ".pio/build/esp32dev/firmware.bin"
+    bootloader_path = ".pio/build/release/bootloader.bin"
+    partitions_path = ".pio/build/release/partitions.bin"
+    firmware_path = ".pio/build/release/firmware.bin"
 
     build = extract_json_val("BUILD_NUMBER")
     release = extract_json_val("RELEASE")
@@ -122,6 +122,6 @@ def after_build(source, target, env):
     # env.Execute(f'esptool.py --chip ESP32 merge_bin -o "%s" % {merged_file} --flash_mode dio --flash_size 4MB 0x1000 {bootloader_path} 0x8000 {partitions_path} 0x10000 {firmware_path}')
 
     # Create the update.bin file
-    shutil.copy(".pio/build/esp32dev/firmware.bin", update_file)
+    shutil.copy(".pio/build/release/firmware.bin", update_file)
 
-env.AddPostAction(APP_BIN , after_build)
+env.AddPostAction("$BUILD_DIR/${PROGNAME}.bin", after_build)

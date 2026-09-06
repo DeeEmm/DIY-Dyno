@@ -1,8 +1,8 @@
 {
-  "MAJOR_VERSION": "V1",
+  "MAJOR_VERSION": "V1-ALPHA",
   "MINOR_VERSION": "1",
-  "BUILD_NUMBER": "2609060001",
-  "RELEASE": "V1",
+  "BUILD_NUMBER": "2609070004",
+  "RELEASE": "V1-ALPHA",
   "DEV_BRANCH": "https://github.com/DeeEmm/DIY-Dyno/tree/DEV",
   "UPDATE_SERVER": "https://raw.githubusercontent.com/DeeEmm/DIY-Dyno/refs/heads/DEV/ESP32/DIY-Dyno/version.json"
 }

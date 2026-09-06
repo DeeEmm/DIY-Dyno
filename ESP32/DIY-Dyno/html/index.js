@@ -66,10 +66,10 @@ if (!!window.EventSource) {
           } else {
             // we've not got a string... 
             
-           if (key === 'FLOW' || key === 'AFLOW' || key === 'MFLOW' || key === 'SFLOW' || key === 'FDIFF') {
+           if (key === 'HP' || key === 'TORQUE' || key === 'LOAD_CELL_RAW' || key === 'HP_CORRECTED' || key === 'FDIFF') {
               document.getElementById(key).innerHTML = myObj[key].toFixed(FLOW_DECIMAL_ACCURACY);  
               
-            } else if (key === 'PREF' || key === 'PDIFF' || key === 'PITOT' || key === 'PITOT_DELTA' || key === 'SWIRL' || key === 'TEMP' || key === 'BARO' || key === 'RELH') {
+            } else if (key === 'FORCE' || key === 'TORQUE_RAW' || key === 'PITOT' || key === 'PITOT_DELTA' || key === 'SWIRL' || key === 'TEMP' || key === 'BARO' || key === 'RELH') {
               document.getElementById(key).innerHTML = myObj[key].toFixed(GEN_DECIMAL_ACCURACY); 
             
             } else if (key === 'bSWIRL_ENBLD' || key === 'iPDIFF_SENS_TYP' || key === 'iPITOT_SENS_TYP') {

@@ -812,13 +812,13 @@ String DataHandler::buildIndexSSEJsonData()
   JsonDocument dataJson;
 
   // Reference pressure (repurposed as Force in kg)
-  dataJson["PREF"] = sensorVal.PRefH2O;
+  dataJson["FORCE"] = sensorVal.LoadForceKG;
 
   // Real-time Dyno telemetry outputs
-  dataJson["FLOW"] = sensorVal.FlowCFM;     // Horsepower (HP)
-  dataJson["MFLOW"] = sensorVal.FlowKGH;    // Load raw / Force
-  dataJson["AFLOW"] = sensorVal.FlowADJ;    // Corrected Torque (Nm)
-  dataJson["SFLOW"] = sensorVal.FlowSCFM;   // Corrected Horsepower (HP)
+  dataJson["HP"] = sensorVal.PowerHP;                    // Horsepower (HP)
+  dataJson["LOAD_CELL_RAW"] = sensorVal.LoadForceKG;     // Load raw / Force
+  dataJson["TORQUE"] = sensorVal.TorqueCorrectedNM;      // Corrected Torque (Nm)
+  dataJson["HP_CORRECTED"] = sensorVal.PowerHPCorrected; // Corrected Horsepower (HP)
 
   // Flow depression value for AFLOW units (not used/static)
   dataJson["PADJUST"] = settings.adj_flow_depression;
@@ -880,8 +880,8 @@ String DataHandler::buildIndexSSEJsonData()
 
 
 
-  // Differential pressure
-  dataJson["PDIFF"] = sensorVal.PDiffH2O;
+  // Differential pressure (repurposed as Torque)
+  dataJson["PDIFF"] = sensorVal.TorqueNM;
   dataJson["iPDIFF_SENS_TYP"] = config.iPDIFF_SENS_TYP;
   
   if (calVal.pdiff_cal_offset == 0) {
@@ -999,10 +999,10 @@ String DataHandler::buildMimicSSEJsonData() {
   dataJson["VCC_3V3_BUS"] = sensorVal.VCC_3V3_BUS;
   dataJson["VCC_5V_BUS"] = sensorVal.VCC_5V_BUS;
 
-  dataJson["FLOW_KG_H"] = sensorVal.FlowKGH;
-  dataJson["FLOW_MG_S"] = _calculations.convertMassFlowUnits(sensorVal.FlowKGH, KG_H, MG_S);
-  dataJson["FLOW_CFM"] = sensorVal.FlowCFM;
-  dataJson["FLOW_LPM"] = _calculations.convertVolumetricFlowUnits(sensorVal.FlowCFM, CFM, LPM);
+  dataJson["LOAD_CELL_RAW"] = sensorVal.LoadForceKG;
+  dataJson["HP"] = sensorVal.PowerHP;
+  dataJson["CTORQUE"] = sensorVal.TorqueCorrectedNM;
+  dataJson["CHP"] = sensorVal.PowerHPCorrected;
 
   dataJson["LOOP_SCAN_TIME"] = status.loopScanTime;
   dataJson["BME_SCAN_COUNT"] = status.bmeScanCountAverage;
