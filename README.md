@@ -10,10 +10,21 @@ The ESP32 crunches the maths and then displays the data to the user via web brow
 
 Data can be saved to your local device and extracted for later comparison or printing.
 
- 
+Environmental conditions (Temperature, Barometric Pressure, and Relative Humidity) are captured in real-time to apply correction standards like SAE J1349.
+
+## Core Features & Technical Specification
+- **Engine Speed (RPM)**: Captured from a digital input (`SPEED_SENS` pin) using a high-precision, debounced hardware interrupt service routine.
+- **Force & Weight (kg)**: Extracted from a strain-gauge load cell using a dedicated library-free, bit-banged HX711 interface over digital channel pins (`dout` on `MAF` pin, `sck` on `PREF` pin).
+- **Torque Calculation ($N\cdot m$)**: Force values are translated to real-time Torque based on your specified physical torque arm length:
+  $$\text{Torque} = \text{Force (kg)} \times 9.80665 \times \text{Torque Arm Length (m)}$$
+- **Horsepower Calculation ($\text{HP}$)**: Derived dynamically in real-time from Torque and engine speed:
+  $$\text{Horsepower} = \frac{\text{Torque (lb-ft)} \times \text{RPM}}{5252}$$
+- **SAE J1349 Correction Factor ($CF$)**: Integrates real-time ambient inputs from a BME280 sensor (temp, raw pressure, humidity) to calculate water vapor pressure ($p_{\text{vapor}}$) and dry air pressure ($p_{\text{dry}}$), applying the reference standard to scale power and torque curves accurately:
+  $$CF = 1.18 \times \left(\frac{990}{p_{\text{dry}}}\right) \times \sqrt{\frac{T_c + 273.15}{298.15}} - 0.18$$
+- **Dual Curve Interactive Graphing**: Real-time plots for both raw/corrected Torque and Horsepower with automatic scaling to easily compare values over 12 points of logging.
 
 ## Software
-The software code is developed in C++ and runs on an ESP32 microprocessor.  The ESP processes sensor data and uses the results to calculate torque and power, which is then displayed via web browser on any web enabled device. The system can be used to display results to various reference standards, for example SAE J1394 or ISO 1584.
+The software code is developed in C++ and runs on an ESP32 microprocessor.  The ESP processes sensor data and uses the results to calculate torque and power, which is then displayed via web browser on any web enabled device. The system can be used to display results to various reference standards, for example SAE J1349 or ISO 1585.
 
 The software also includes provision for data recording, allowing tests to be saved for later viewing and analysis.
 

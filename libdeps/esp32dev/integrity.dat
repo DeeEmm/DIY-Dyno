@@ -1,0 +1,6 @@
+ESP32Async/AsyncTCP
+majicdesigns/MD_REncoder@^1.0.1
+https://github.com/fabyte/Tiny_BME280_Arduino_Library.git
+ESP32Async/ESPAsyncWebServer
+https://github.com/DeeEmm/ADS1115_lite
+ArduinoJson
